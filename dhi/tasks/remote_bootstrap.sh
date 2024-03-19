@@ -35,6 +35,7 @@ bootstrap_htcondor_standalone() {
     export DHI_SOFTWARE="${DHI_SOFTWARE:-${DHI_DATA}/software}"
     export DHI_USER="{{dhi_user}}"
     export DHI_STORE="{{dhi_store}}"
+    export DHI_DATACARDS_RUN2="{{dhi_datacards_run2}}"
     export DHI_LOCAL_SCHEDULER="{{dhi_local_scheduler}}"
     export DHI_HOOK_FILE="{{dhi_hook_file}}"
     export DHI_LCG_DIR="{{dhi_lcg_dir}}"

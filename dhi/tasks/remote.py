@@ -334,6 +334,7 @@ class HTCondorWorkflow(AnalysisTask, law.htcondor.HTCondorWorkflow):
         config.render_variables["dhi_base"] = os.environ["DHI_BASE"]
         config.render_variables["dhi_user"] = os.environ["DHI_USER"]
         config.render_variables["dhi_store"] = os.environ["DHI_STORE"]
+        config.render_variables["dhi_datacards_run2"] = os.getenv("DHI_DATACARDS_RUN2", "")
         config.render_variables["dhi_local_scheduler"] = os.environ["DHI_LOCAL_SCHEDULER"]
         config.render_variables["dhi_hook_file"] = hook_file
         if self.htcondor_getenv:
