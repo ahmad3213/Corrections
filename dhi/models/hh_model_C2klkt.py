@@ -208,6 +208,7 @@ model_all = create_model(
 # updated cross section helpers
 ####################################################################################################
 
+
 def create_ggf_xsec_func(ggf_formula):
     """
     Creates and returns a function that can be used to calculate numeric ggf cross section values in
