@@ -623,7 +623,7 @@ class PlotMultipleLikelihoodScans(PlotLikelihoodScan, POIMultiTask, MultiDatacar
             # store a data entry
             data.append(dict([
                 ("values", values),
-                ("poi_min", [poi_mins[p] for p in self.pois]),
+                ("poi_mins", [poi_mins[p] for p in self.pois]),
                 ("name", "Cards {}".format(i + 1)),
             ]))
 
@@ -779,7 +779,7 @@ class PlotMultipleLikelihoodScansByModel(PlotLikelihoodScan, POIMultiTask, Multi
             # store a data entry
             data.append(dict([
                 ("values", values),
-                ("poi_min", [poi_mins[p] for p in self.pois]),
+                ("poi_mins", [poi_mins[p] for p in self.pois]),
                 ("name", name),
             ]))
 
