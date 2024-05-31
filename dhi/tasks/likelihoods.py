@@ -452,6 +452,7 @@ class PlotLikelihoodScan(LikelihoodBase, POIPlotTask):
             self.get_scan_parameter_combinations(),
             recompute_dnll2=recompute_dnll2,
             merge_scans=merge_scans,
+            logger=self.logger,
         )
 
     @classmethod
@@ -462,6 +463,7 @@ class PlotLikelihoodScan(LikelihoodBase, POIPlotTask):
         scan_parameter_combinations,
         recompute_dnll2=True,
         merge_scans=True,
+        logger=None,
     ):
         import numpy as np
 
@@ -483,10 +485,16 @@ class PlotLikelihoodScan(LikelihoodBase, POIPlotTask):
             nll_unique = np.unique(v["nll0"])
             nll_unique = nll_unique[~np.isnan(nll_unique)]
             if len(nll_unique) != 1:
-                raise Exception(
-                    "found {} different nll0 values in scan data which indicates in "
-                    "issue with the model: {}".format(len(nll_unique), nll_unique),
-                )
+                if len(nll_unique) == 0:
+                    raise Exception(
+                        "found {} different nll0 values in scan data which indicates in "
+                        "issue with the model: {}".format(len(nll_unique), nll_unique),
+                    )
+                else:
+                    logger.warning(
+                        "found {} different nll0 values in scan data which indicates in "
+                        "issue with the model: {}".format(len(nll_unique), nll_unique),
+                    )
 
         # recompute dnll2 from the minimum nll and fit_nll
         if recompute_dnll2:

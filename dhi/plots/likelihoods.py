@@ -774,7 +774,7 @@ def plot_likelihood_scan_2d(
         for graphs, level, col, ls in zip(contours, contour_levels, contour_colors, contour_styles):
             for g in graphs:
                 r.setup_graph(g, props={"LineWidth": 2, "LineColor": colors(col), "LineStyle": ls})
-                draw_objs.append((g, "SAME,C"))
+                draw_objs.append((g, "SAME,L"))
 
             # stop here when only drawing contours
             if style.matches("contours*"):
