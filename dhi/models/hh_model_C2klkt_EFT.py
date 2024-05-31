@@ -1145,7 +1145,9 @@ class HHModel_BETAMH_7a_i(HHModelEFTBase):
         # CV from Florians paper
         # self.make_expr("expr::CV('1-0.5*(1-sqrt(1-pow( (2*pow(@0,2)*@1)/(pow(@2,2)-pow(@3,2)),2)))', NU,Z6, MHE, MH )")  # noqa
         # CV from old 2016 model
-        self.make_expr("expr::CV('sqrt(1-0.5*(1-sqrt(1-pow( (2*pow(@0,2)*@1)/(pow(@2,2)-pow(@3,2)),2))))', NU,Z6, MHE, MH )")  # noqa
+        # self.make_expr("expr::CV('sqrt(1-0.5*(1-sqrt(1-pow( (2*pow(@0,2)*@1)/(pow(@2,2)-pow(@3,2)),2))))', NU,Z6, MHE, MH )")  # noqa
+        # CV from old model CBA definition
+        self.make_expr("expr::CV('sqrt(1-@0*@0)', CBA)")
         self.make_var("{}[1]".format("kW"))
         self.get_var("kW").setConstant(True)
         self.make_var("{}[1]".format("kZ"))
@@ -1201,7 +1203,9 @@ class HHModel_BETAMH_7a_ii(HHModelEFTBase):
         # CV from Florians paper
         # self.make_expr("expr::CV('1-0.5*(1-sqrt(1-pow( (2*pow(@0,2)*@1)/(pow(@2,2)-pow(@3,2)),2)))', NU,Z6, MHE, MH )")  # noqa
         # CV from old 2016 model
-        self.make_expr("expr::CV('sqrt(1-0.5*(1-sqrt(1-pow( (2*pow(@0,2)*@1)/(pow(@2,2)-pow(@3,2)),2))))', NU,Z6, MHE, MH )")  # noqa
+        # self.make_expr("expr::CV('sqrt(1-0.5*(1-sqrt(1-pow( (2*pow(@0,2)*@1)/(pow(@2,2)-pow(@3,2)),2))))', NU,Z6, MHE, MH )")  # noqa
+        # CV from old model CBA definition
+        self.make_expr("expr::CV('sqrt(1-@0*@0)', CBA)")
         self.make_var("{}[1]".format("kW"))
         self.get_var("kW").setConstant(True)
         self.make_var("{}[1]".format("kZ"))
@@ -1258,7 +1262,9 @@ class HHModel_BETAMH_7a_iii(HHModelEFTBase):
         # CV from Florians paper
         # self.make_expr("expr::CV('1-0.5*(1-sqrt(1-pow( (2*pow(@0,2)*@1)/(pow(@2,2)-pow(@3,2)),2)))', NU,Z6, MHE, MH )")  # noqa
         # CV from old 2016 model
-        self.make_expr("expr::CV('sqrt(1-0.5*(1-sqrt(1-pow( (2*pow(@0,2)*@1)/(pow(@2,2)-pow(@3,2)),2))))', NU,Z6, MHE, MH )")  # noqa
+        # self.make_expr("expr::CV('sqrt(1-0.5*(1-sqrt(1-pow( (2*pow(@0,2)*@1)/(pow(@2,2)-pow(@3,2)),2))))', NU,Z6, MHE, MH )")  # noqa
+        # CV from old model CBA definition
+        self.make_expr("expr::CV('sqrt(1-@0*@0)', CBA)")
         self.make_var("{}[1]".format("kW"))
         self.get_var("kW").setConstant(True)
         self.make_var("{}[1]".format("kZ"))
@@ -1315,7 +1321,9 @@ class HHModel_BETAMH_7a_iv(HHModelEFTBase):
         # CV from Florians paper
         # self.make_expr("expr::CV('1-0.5*(1-sqrt(1-pow( (2*pow(@0,2)*@1)/(pow(@2,2)-pow(@3,2)),2)))', NU,Z6, MHE, MH )")  # noqa
         # CV from old 2016 model
-        self.make_expr("expr::CV('sqrt(1-0.5*(1-sqrt(1-pow( (2*pow(@0,2)*@1)/(pow(@2,2)-pow(@3,2)),2))))', NU,Z6, MHE, MH )")  # noqa
+        # self.make_expr("expr::CV('sqrt(1-0.5*(1-sqrt(1-pow( (2*pow(@0,2)*@1)/(pow(@2,2)-pow(@3,2)),2))))', NU,Z6, MHE, MH )")  # noqa
+        # CV from old model CBA definition
+        self.make_expr("expr::CV('sqrt(1-@0*@0)', CBA)")
         self.make_var("{}[1]".format("kW"))
         self.get_var("kW").setConstant(True)
         self.make_var("{}[1]".format("kZ"))
