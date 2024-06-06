@@ -1688,6 +1688,7 @@ class CombineCommandTask(CommandTask):
 
         # additional args
         args += " --X-rtd REMOVE_CONSTANT_ZERO_POINT=1"
+        args += " --X-rtd TMCSO_AdaptivePseudoAsimov=0 --X-rtd TMCSO_PseudoAsimov=0"
 
         # optimization for discrete parameters (as suggested by bbgg)
         if self.optimize_discretes:
