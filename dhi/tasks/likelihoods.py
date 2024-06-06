@@ -628,12 +628,20 @@ class PlotMultipleLikelihoodScans(PlotLikelihoodScan, POIMultiTask, MultiDatacar
             if self.recompute_best_fit:
                 poi_mins = {p: None for p in poi_mins}
 
-            # store a data entry
-            data.append(dict([
-                ("values", values),
-                ("poi_mins", [poi_mins[p] for p in self.pois]),
-                ("name", "Cards {}".format(i + 1)),
-            ]))
+            if self.n_pois == 1:
+                # store a data entry
+                data.append(dict([
+                    ("values", values),
+                    ("poi_min", [poi_mins[p] for p in self.pois]),
+                    ("name", "Cards {}".format(i + 1)),
+                ]))
+            else:
+                # store a data entry
+                data.append(dict([
+                    ("values", values),
+                    ("poi_mins", [poi_mins[p] for p in self.pois]),
+                    ("name", "Cards {}".format(i + 1)),
+                ]))
 
         # allow scaling via hook for projections
         self.call_hook("scale_multi_likelihoods", data=data)
