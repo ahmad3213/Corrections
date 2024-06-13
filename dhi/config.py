@@ -74,6 +74,7 @@ br_hh["bbzz4l"] = br_hh.bbzzllll
 br_hh_names = DotDict(
     bbbb=r"bb bb",
     bbbb_low=r"bb bb, #scale[0.75]{low $m_{HH}$}",
+    bbbb_resolved=r"bb bb, #scale[0.75]{low $m_{HH}$}",
     bbbb_boosted=r"bb bb, #scale[0.75]{high $m_{HH}$}",
     bbbb_boosted_ggf=r"bb bb #scale[0.75]{high $m_{HH}$, ggF}",
     bbbb_boosted_vbf=r"bb bb #scale[0.75]{high $m_{HH}$, VBF}",
@@ -214,21 +215,55 @@ colors = DotDict(
         purple=881,
         brazil_yellow=800,  # kOrange
         brazil_green=417,  # kGreen + 1
+        cms_blue="#85D1FBff",
+        cms_yellow="#FFDF7Fff",
+        cms_brazil_yellow="#F5BB54",
+        cms_brazil_green="#607641",
+        cms_I_A="#5790fc",
+        cms_I_B="#f89c20",
+        cms_I_C="#e42536",
+        cms_I_D="#964a8b",
+        cms_I_E="#9c9ca1",
+        cms_I_F="#7a21dd",
+        cms_II_A="#3f90da",
+        cms_II_B="#ffa90e",
+        cms_II_C="#bd1f01",
+        cms_II_D="#94a4a2",
+        cms_II_E="#832db6",
+        cms_II_F="#a96b59",
+        cms_II_G="#e76300",
+        cms_II_H="#b9ac70",
+        cms_II_I="#717581",
+        cms_II_J="#92dadd",
     ),
 )
 
 # color sequence for plots with multiple elements
+color_sequence_short = ["cms_I_A", "cms_I_B", "cms_I_C", "cms_I_D", "cms_I_E", "cms_I_F"]
 color_sequence = [
-    "blue", "green", "orange", "cyan", "red_cream", "grey", "pink", "light_green", "yellow",
+    "cms_II_A",
+    "cms_II_B",
+    "cms_II_C",
+    "cms_II_D",
+    "cms_II_E",
+    "cms_II_F",
+    "cms_II_G",
+    "cms_II_H",
+    "cms_II_I",
+    "cms_II_J",
 ]
 color_sequence += 10 * ["grey"]
+color_sequence_old = [
+    "blue", "green", "orange", "cyan", "red_cream", "grey", "pink", "light_green", "yellow",
+]
+color_sequence_old += 10 * ["grey"]
 
 # marker sequence for plots with multiple elements
 marker_sequence = [20, 21, 22, 23, 24, 25, 26, 32, 27, 33, 28, 34, 29, 30]
 marker_sequence += 10 * [20]
 
 # colors per entry in br_hh_names for deterministic channel colors
-br_hh_colors = DotDict(
+br_hh_colors_old = DotDict(
     root=DotDict(
         bbbb="blue",
         bbbb_boosted="pink",
@@ -240,13 +275,34 @@ br_hh_colors = DotDict(
         bbgg="green",
         wwgg="light_green",
         multilepton="purple",
-        Combined="grey",
+        ggtt="gray",
+        Combined="black",
+    ),
+)
+
+br_hh_colors = DotDict(
+    root=DotDict(
+        bbbb="cms_II_A",
+        bbbb_boosted="cms_II_B",
+        bbbb_boosted_ggf="cms_II_C",
+        bbbb_boosted_vbf="cms_II_D",
+        bbww="cms_II_E",
+        bbzz="cms_II_F",
+        bbtt="cms_II_G",
+        bbgg="cms_II_H",
+        wwgg="cms_II_I",
+        multilepton="cms_II_J",
+        ggtt="gray",
+        Combined="black",
     ),
 )
 # aliases
 br_hh_colors.root["Combination"] = br_hh_colors.root.Combined
+br_hh_colors.root["combination (no Inj.)"] = br_hh_colors.root.Combined
 br_hh_colors.root["bbzz4l"] = br_hh_colors.root.bbzz
+br_hh_colors.root["ttgg"] = br_hh_colors.root.ggtt
 br_hh_colors.root["bbbb_low"] = br_hh_colors.root.bbbb
+br_hh_colors.root["bbbb_resolved"] = br_hh_colors.root.bbbb
 
 # cumulative, inverse chi2 values in a mapping "n_dof -> n_sigma -> level"
 # for the geometrical determination of errors of nll curves

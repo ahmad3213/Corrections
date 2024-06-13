@@ -87,7 +87,9 @@ def plot_limit_scan(
     Supported values for *style*:
 
         - "paper"
-
+        - "old-colors"
+        - "new-brazil"
+        - "cms-colors"
     Example: https://cms-hh.web.cern.ch/tools/inference/tasks/limits.html#limit-on-poi-vs-scan-parameter  # noqa
     """
     import plotlib.root as r
@@ -97,6 +99,20 @@ def plot_limit_scan(
     style = Style.new(style)
     if style.matches("paper"):
         cms_postfix = None
+
+    # set brazilian flag colors
+    g1_color = colors.cms_yellow
+    g2_color = colors.cms_blue
+    theo_color = colors.cms_I_C
+
+    if style.matches("old-colors"):
+        g1_color = colors.brazil_green
+        g2_color = colors.brazil_yellow
+        theo_color = colors.red
+    elif style.matches("new-brazil"):
+        g1_color = colors.cms_brazil_green
+        g2_color = colors.cms_brazil_yellow
+        theo_color = colors.cms_I_C
 
     # input checks
     def check_values(values, keys=None):
@@ -177,7 +193,7 @@ def plot_limit_scan(
         g_2sigma = create_graph(sigma=2)
         r.setup_graph(
             g_2sigma,
-            props={"LineWidth": 2, "LineStyle": 2, "FillColor": colors.brazil_yellow},
+            props={"LineWidth": 2, "LineStyle": 2, "FillColor": g2_color},
         )
         draw_objs.append((g_2sigma, "SAME,4"))  # option 4 might fallback to 3, see below
         legend_entries_r.insert(0, (g_2sigma, "95% expected", "LF"))
@@ -190,7 +206,7 @@ def plot_limit_scan(
         g_1sigma = create_graph(sigma=1)
         r.setup_graph(
             g_1sigma,
-            props={"LineWidth": 2, "LineStyle": 2, "FillColor": colors.brazil_green},
+            props={"LineWidth": 2, "LineStyle": 2, "FillColor": g1_color},
         )
         draw_objs.append((g_1sigma, "SAME,4"))  # option 4 might fallback to 3, see below
         legend_entries_r.insert(0, (g_1sigma, "68% expected", "LF"))
@@ -366,7 +382,7 @@ def plot_limit_scan(
             r.setup_graph(
                 g_thy,
                 props={
-                    "LineWidth": 2, "LineStyle": 1, "LineColor": colors.red, "FillStyle": 1001,
+                    "LineWidth": 2, "LineStyle": 1, "LineColor": theo_color, "FillStyle": 1001,
                     "FillColor": colors.red_trans_50,
                 },
             )
@@ -374,7 +390,7 @@ def plot_limit_scan(
             legend_entry = (g_thy, "Theory prediction", "LF")
         else:
             g_thy = create_graph(values=theory_values, key="xsec")
-            r.setup_graph(g_thy, props={"LineWidth": 2, "LineStyle": 1, "LineColor": colors.red})
+            r.setup_graph(g_thy, props={"LineWidth": 2, "LineStyle": 1, "LineColor": theo_color})
             draw_objs.append((g_thy, "SAME,C"))
             legend_entry = (g_thy, "Theory prediction", "L")
         # only add to the legend if values are in terms of a cross section

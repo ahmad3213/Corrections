@@ -289,6 +289,17 @@ class PlotLikelihoodScan(LikelihoodBase, POIPlotTask):
         significant=False,
         description="show points of central likelihood values; 1D only; default: False",
     )
+    show_sm = luigi.BoolParameter(
+        default=True,
+        significant=False,
+        description="weather or not to show the SM point; default: True",
+    )
+    extra_text = luigi.Parameter(
+        default=None,
+        significant=False,
+        description="extra text to e.g indicate model; "
+        "empty default",
+    )
     show_box = luigi.BoolParameter(
         default=False,
         significant=False,
@@ -402,6 +413,7 @@ class PlotLikelihoodScan(LikelihoodBase, POIPlotTask):
                 show_significances=self.show_significances,
                 shift_negative_values=self.shift_negative_values,
                 interpolate_above=self.interpolate_above,
+                show_sm_point=self.show_sm,
                 x_min=self.get_axis_limit("x_min"),
                 x_max=self.get_axis_limit("x_max"),
                 y_min=self.get_axis_limit("y_min"),
@@ -413,6 +425,7 @@ class PlotLikelihoodScan(LikelihoodBase, POIPlotTask):
                 cms_postfix=self.cms_postfix,
                 style=self.style,
                 dump_target=outputs.get("plot_data"),
+                extra_text=self.extra_text,
             )
         else:  # 2
             self.call_plot_func(
@@ -430,6 +443,7 @@ class PlotLikelihoodScan(LikelihoodBase, POIPlotTask):
                 interpolate_nans=self.interpolate_nans,
                 interpolate_above=self.interpolate_above,
                 interpolation_method=self.interpolation_method,
+                show_sm_point=self.show_sm,
                 show_box=self.show_box,
                 x_min=self.get_axis_limit("x_min"),
                 x_max=self.get_axis_limit("x_max"),
@@ -443,6 +457,7 @@ class PlotLikelihoodScan(LikelihoodBase, POIPlotTask):
                 cms_postfix=self.cms_postfix,
                 style=self.style,
                 dump_target=outputs.get("plot_data"),
+                extra_text=self.extra_text,
             )
 
     def load_scan_data(self, inputs, recompute_dnll2=True, merge_scans=True):
@@ -551,6 +566,14 @@ class PlotLikelihoodScan(LikelihoodBase, POIPlotTask):
 
 class PlotMultipleLikelihoodScans(PlotLikelihoodScan, POIMultiTask, MultiDatacardTask):
 
+    show_significances = law.CSVParameter(
+        cls=luigi.FloatParameter,
+        default=None,
+        significant=False,
+        description="values of integer significances (>= 1) or float confidence levels (< 1) "
+        "to overlay with lines and lables; default: 1,2,3,5",
+    )
+
     z_min = None
     z_max = None
     z_log = None
@@ -616,6 +639,12 @@ class PlotMultipleLikelihoodScans(PlotLikelihoodScan, POIMultiTask, MultiDatacar
     @law.decorator.safe_output
     @law.decorator.localize(input=False)
     def run(self):
+        if not self.show_significances[0]:
+            if self.n_pois == 1:
+                self.show_significances = (1, 2, 3, 4, 5)
+            else:
+                self.show_significances = (1, 2)
+
         # prepare the output
         outputs = self.output()
         outputs["plots"][0].parent.touch()
@@ -670,6 +699,7 @@ class PlotMultipleLikelihoodScans(PlotLikelihoodScan, POIMultiTask, MultiDatacar
                 show_best_fit=self.show_best_fit,
                 show_best_fit_error=self.show_best_fit_error,
                 show_best_fit_indicators=False,
+                show_sm_point=self.show_sm,
                 show_significances=self.show_significances,
                 shift_negative_values=self.shift_negative_values,
                 interpolate_above=self.interpolate_above,
@@ -684,6 +714,7 @@ class PlotMultipleLikelihoodScans(PlotLikelihoodScan, POIMultiTask, MultiDatacar
                 cms_postfix=self.cms_postfix,
                 style=self.style,
                 dump_target=outputs.get("plot_data"),
+                extra_text=self.extra_text,
             )
         else:  # 2
             self.call_plot_func(
@@ -704,6 +735,10 @@ class PlotMultipleLikelihoodScans(PlotLikelihoodScan, POIMultiTask, MultiDatacar
                 cms_postfix=self.cms_postfix,
                 style=self.style,
                 dump_target=outputs.get("plot_data"),
+                show_significances=self.show_significances,
+                show_sm_point=self.show_sm,
+                extra_text=self.extra_text,
+                show_best_fit=self.show_best_fit,
             )
 
 

@@ -48,6 +48,7 @@ def plot_likelihood_scans_1d(
     show_significances=(1, 2, 3, 5),
     shift_negative_values=False,
     interpolate_above=None,
+    show_sm_point=False,
     v_lines=None,
     x_min=None,
     x_max=None,
@@ -59,6 +60,7 @@ def plot_likelihood_scans_1d(
     show_points=True,
     cms_postfix=None,
     style=None,
+    extra_text=None,
 ):
     """
     Plots multiple curves of 1D likelihood scans of a POI *poi1* and *poi2*, and saves it at *paths*.
@@ -76,6 +78,7 @@ def plot_likelihood_scans_1d(
     sigma intervals of the scan parameter are saved to the given file. When *hep_data_path* is set,
     a yml data file compatible with the HEPData format
     (https://hepdata-submission.readthedocs.io/en/latest/data_yaml.html) is stored at that path.
+    only shown if *show_sm_point* true
 
     When *show_best_fit* (*show_best_fit_error*) is *True*, the best fit error value (and its
     uncertainty) is shown in the corresponding legend entry. When *show_best_fit_line* is *True*, a
@@ -98,6 +101,8 @@ def plot_likelihood_scans_1d(
     should refer to the name of a campaign label defined in *dhi.config.campaign_labels*. When
     *show_points* is *True*, the central scan points are drawn on top of the interpolated curve.
     *cms_postfix* is shown as the postfix behind the CMS label.
+
+    *extra_text* is a string for an extra label on the plot to e.g indicate a specific theory model.
 
     Supported values for *style*:
 
@@ -347,7 +352,7 @@ def plot_likelihood_scans_1d(
         parameter_ranges[key] = scan["summary"] if scan else None
 
     # theory prediction with uncertainties
-    if theory_value:
+    if theory_value and show_sm_point:
         has_thy_err = len(theory_value) == 3
         if has_thy_err:
             # theory graph
@@ -431,6 +436,17 @@ def plot_likelihood_scans_1d(
             param_kwargs["y_offset"] = 1.0 - 0.25 * pad.GetTopMargin() - legend.GetY1()
         draw_objs.extend(create_model_parameters(model_parameters, pad, **param_kwargs))
 
+    # extra text such as UV model
+    if extra_text:
+        y_offset = 60 + legend_rows * 30
+        extra_label = to_root_latex(extra_text)
+        extra_label = r.routines.create_top_left_label(
+            extra_label,
+            x_offset=40,
+            y_offset=y_offset,
+        )
+        draw_objs.append(extra_label)
+
     # campaign label
     if campaign:
         campaign_label = to_root_latex(campaign_labels.get(campaign, campaign))
@@ -486,6 +502,7 @@ def plot_likelihood_scan_2d(
     eft_lines=None,
     cms_postfix=None,
     style=None,
+    extra_text=None,
 ):
     """
     Creates a likelihood plot of the 2D scan of two POIs *poi1* and *poi2*, and saves it at *paths*.
@@ -526,12 +543,15 @@ def plot_likelihood_scan_2d(
     *eft_lines* can the the path to a file containing options to draw predefined theory lines
     to be added to 2D likelihood plots.
 
+    *extra_text* is a string for an extra label on the plot to e.g indicate a specific theory model.
+
     Setting *style* leads to slight variations of the plot style. Valid options are:
 
     - "paper"
     - "contours": Only draw 1 and 2 sigma contour lines over a white background and hide the z-axis.
     - "contours_hcomb": Same as "contours", but line styles, text sizes, etc. are similar to the
                         kf-kV plots of the HComb group.
+    - "old-colors": old, pre color friendliness sheme
 
     Example: https://cms-hh.web.cern.ch/tools/inference/tasks/likelihood.html#2d
     """
@@ -602,12 +622,21 @@ def plot_likelihood_scan_2d(
     # determine contours independent of plotting
     contour_levels = [1, 2, 3, 4, 5]
     contour_colors = {
-        1: colors.brazil_green,
-        2: colors.brazil_yellow,
-        3: colors.blue_cream,
-        4: colors.orange,
-        5: colors.red_cream,
+        1: colors.cms_I_B,
+        2: colors.cms_I_A,
+        3: colors.cms_I_C,
+        4: colors.cms_I_D,
+        5: colors.cms_I_F,
     }
+    if style.matches("old-colors"):
+        contour_colors = {
+            1: colors.brazil_green,
+            2: colors.brazil_yellow,
+            3: colors.blue_cream,
+            4: colors.orange,
+            5: colors.red_cream,
+        }
+
     if show_significances and isinstance(show_significances, (list, tuple)):
         contour_levels = list(show_significances)
     n_contours = len(contour_levels)
@@ -964,9 +993,8 @@ def plot_likelihood_scan_2d(
         label = "Observed" if style == "paper" else make_bf_label(scan.num1_min, scan.num2_min)
         legend_entries.insert(0, (g_fit, label, "PLE" if show_best_fit_error else "P"))
     if style.matches("contours*"):
-        for graphs, level in zip(contours, style.significance_labels):
-            for g in graphs:
-                legend_entries.append((g, level, "L"))
+        for il, level in enumerate(style.significance_labels):
+            legend_entries.append((contours[il][0], level, "L"))
     if legend_entries:
         legend_kwargs = {"pad": pad, "width": 340, "n": len(legend_entries)}
         if eft_lines:
@@ -1000,10 +1028,28 @@ def plot_likelihood_scan_2d(
     if model_parameters:
         param_kwargs = {}
         param_kwargs["props"] = {"TextSize": 30} if style.matches("contours_hcomb") else {}
+        y_offset = 40
         if cms_layout.startswith("inside"):
             y_offset = 100 if cms_layout == "inside_vertical" and cms_postfix else 80
-            param_kwargs = {"y_offset": y_offset}
+        if extra_text:
+            y_offset += 24
+        param_kwargs = {"y_offset": y_offset}
         draw_objs.extend(create_model_parameters(model_parameters, pad, **param_kwargs))
+
+    # extra text such as UV model
+    if extra_text:
+        props = {"TextSize": 40} if style.matches("contours_hcomb") else {}
+        y_offset = 40
+        if cms_layout.startswith("inside"):
+            y_offset = 100 if cms_layout == "inside_vertical" and cms_postfix else 80
+        extra_label = to_root_latex(extra_text)
+        extra_label = r.routines.create_top_left_label(
+            extra_label,
+            props=props,
+            x_offset=25,
+            y_offset=y_offset,
+        )
+        draw_objs.append(extra_label)
 
     # campaign label
     if campaign:
@@ -1011,6 +1057,13 @@ def plot_likelihood_scan_2d(
         campaign_label = to_root_latex(campaign_labels.get(campaign, campaign))
         campaign_label = r.routines.create_top_right_label(campaign_label, pad=pad, props=props)
         draw_objs.append(campaign_label)
+
+    # new CMS color map, do not use style after this!
+    if not style.matches("old-colors"):
+        # Set the CMS official palette
+        import cmsstyle as CMS
+        CMS.setCMSStyle()
+        CMS.SetCMSPalette()
 
     # draw all objects
     r.routines.draw_objects(draw_objs)
@@ -1047,6 +1100,10 @@ def plot_likelihood_scans_2d(
     campaign=None,
     cms_postfix=None,
     style=None,
+    show_significances=(1, 2),
+    show_sm_point=True,
+    extra_text=None,
+    show_best_fit=True,
 ):
     """
     Creates the likelihood contour plots of multiple 2D scans of two POIs *poi1* and *poi2*, and
@@ -1069,6 +1126,8 @@ def plot_likelihood_scans_2d(
     threshold. *interpolation_method* can either be "tgraph2d" (TGraph2D), "linear" or "cubic"
     (scipy.interpolate's interp2d or griddata), or "rbf" (scipy.interpolate.Rbf). In case a tuple is
     passed, the method should be the first element, followed by optional configuration options.
+
+    *extra_text* is a string for an extra label on the plot to e.g indicate a specific theory model.
 
     When *model_parameters* can be a dictionary of key-value pairs of model parameters. *campaign*
     should refer to the name of a campaign label defined in *dhi.config.campaign_labels*.
@@ -1184,14 +1243,18 @@ def plot_likelihood_scans_2d(
         if not scan:
             warn("2D likelihood evaluation failed for entry '{}'".format(d["name"]))
 
-        # plot 1 and 2 sigma contours
+        # plot selected contours
         g1, g2 = None, None
         for g1 in cont1:
             r.setup_graph(g1, props={"LineWidth": 2, "LineStyle": 1, "LineColor": colors[col]})
-            draw_objs.append((g1, "SAME,C"))
+            if 1 in show_significances:
+                draw_objs.append((g1, "SAME,L"))
         for g2 in cont2:
             r.setup_graph(g2, props={"LineWidth": 2, "LineStyle": 2, "LineColor": colors[col]})
-            draw_objs.append((g2, "SAME,C"))
+            if 1 not in show_significances:
+                r.setup_graph(g2, props={"LineWidth": 2, "LineStyle": 1, "LineColor": colors[col]})
+            if 2 in show_significances:
+                draw_objs.append((g2, "SAME,L"))
         name = expand_hh_channel_label(d["name"])
         if g1:
             legend_entries.append((g1, name, "L"))
@@ -1200,40 +1263,48 @@ def plot_likelihood_scans_2d(
         if scan:
             g_fit = create_tgraph(1, scan.num1_min(), scan.num2_min())
             r.setup_graph(g_fit, props={"MarkerStyle": 33, "MarkerSize": 2}, color=colors[col])
-            draw_objs.append((g_fit, "SAME,PEZ"))
+            if show_best_fit:
+                draw_objs.append((g_fit, "SAME,PEZ"))
 
     # append legend entries to show styles
     g_fit_style = g_fit.Clone()
     r.apply_properties(g_fit_style, {"MarkerColor": colors.black})
-    legend_entries.append((g_fit_style, "Best fit value", "P"))
-    if g1:
+    if show_best_fit:
+        legend_entries.append((g_fit_style, "Best fit", "P"))
+    if g1 and 1 in show_significances:
         g1_style = g1.Clone()
         r.apply_properties(g1_style, {"LineColor": colors.black})
         legend_entries.append((g1_style, "#pm 1 #sigma", "L"))
     else:
         warn("no primary contour found, no line will be visible")
-    if g2:
+    if g2 and 2 in show_significances:
         g2_style = g2.Clone()
         r.apply_properties(g2_style, {"LineColor": colors.black})
         legend_entries.append((g2_style, "#pm 2 #sigma", "L"))
     else:
         warn("no secondary contour found, no line will be visible")
 
-    # prepend empty values
-    n_empty = 3 - (len(legend_entries) % 3)
-    if n_empty not in (0, 3):
-        for _ in range(n_empty):
-            legend_entries.insert(3 - n_empty, (h_dummy, " ", "L"))
+    # campaign label
+    if campaign:
+        campaign_label = to_root_latex(campaign_labels.get(campaign, campaign))
+        campaign_label = r.routines.create_top_right_label(campaign_label, pad=pad)
+        draw_objs.append(campaign_label)
 
-    # legend with actual entries in different colors
-    legend_cols = int(math.ceil(len(legend_entries) / 3.0))
+    legend_cols = min(int(math.ceil(len(legend_entries) / 3.0)), 3)
     legend_rows = min(len(legend_entries), 3)
+    width = legend_cols * 195
+    height = legend_rows * 30
+    x2 = 0.95
     legend = r.routines.create_legend(
         pad=pad,
-        width=legend_cols * 150,
-        height=legend_rows * 30,
+        width=width,
+        height=height,
         props={"NColumns": legend_cols},
+        x2=x2,
     )
+    if show_best_fit:
+        legend.SetTextSize(0.8 * legend.GetTextSize())
+
     r.fill_legend(legend, legend_entries)
     draw_objs.append(legend)
     legend_box = r.routines.create_legend_box(
@@ -1255,15 +1326,22 @@ def plot_likelihood_scans_2d(
     # model parameter labels
     if model_parameters:
         param_kwargs = {}
-        if legend_cols == 3:
-            param_kwargs["y_offset"] = 1.0 - 0.25 * pad.GetTopMargin() - legend.GetY1()
+        y_offset = 40
+        if extra_text:
+            y_offset += 24
+        param_kwargs = {"y_offset": y_offset}
         draw_objs.extend(create_model_parameters(model_parameters, pad, **param_kwargs))
 
-    # campaign label
-    if campaign:
-        campaign_label = to_root_latex(campaign_labels.get(campaign, campaign))
-        campaign_label = r.routines.create_top_right_label(campaign_label, pad=pad)
-        draw_objs.append(campaign_label)
+    # extra text such as UV model
+    if extra_text:
+        y_offset = 40
+        extra_label = to_root_latex(extra_text)
+        extra_label = r.routines.create_top_left_label(
+            extra_label,
+            x_offset=25,
+            y_offset=y_offset,
+        )
+        draw_objs.append(extra_label)
 
     # draw all objects
     r.routines.draw_objects(draw_objs)

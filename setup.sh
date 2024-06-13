@@ -231,6 +231,7 @@ setup() {
             dhi_pip_install 'flake8==5.0.4' || return "$?"
             dhi_pip_install 'flake8-commas==2.1.0' || return "$?"
             dhi_pip_install 'flake8-quotes==3.3.2' || return "$?"
+            dhi_pip_install 'cmsstyle' || return "$?"
 
             # optional packages, disabled at the moment
             # dhi_pip_install python-telegram-bot==12.3.0
