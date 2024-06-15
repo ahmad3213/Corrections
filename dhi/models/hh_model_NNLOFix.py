@@ -1483,7 +1483,7 @@ ggf_kl_coeffs = {
     # "nlo": (62.5339, -44.3231, 9.6340),
     # "nnlo": (70.3874, -50.4111, 11.0595),
     # Updated formula, after powheg fix also setting NLO to NNLO to circumvent NNLO/NLO scaling
-    # as inputs are now scaled directly to NNLO 
+    # as inputs are now scaled directly to NNLO
     # https://twiki.cern.ch/twiki/bin/view/LHCPhysics/LHCHWGHH?redirectedfrom=LHCPhysics.LHCHXSWGHH?rev=94
     "nlo": (69.18, -48.803, 10.6586),
     "nnlo": (69.18, -48.803, 10.6586),
