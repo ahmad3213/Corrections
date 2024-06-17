@@ -41,6 +41,7 @@ add_ggf_sample(kl=1.0, kt=1.0, C2=0.35, xs=0.011103, label="ggHH_kl_1p00_kt_1p00
 add_ggf_sample(kl=1.0, kt=1.0, C2=3.0, xs=2.923567, label="ggHH_kl_1p00_kt_1p00_c2_3p00")
 add_ggf_sample(kl=1.0, kt=1.0, C2=-2.0, xs=1.956196, label="ggHH_kl_1p00_kt_1p00_c2_m2p00")
 
+
 class HHModelEFTBase(DefaultHHModel):
     """
     Models the HH production as linear sum of the input components for >= 6 ggf (EFT) and >= 6 vbf

@@ -911,7 +911,7 @@ def plot_likelihood_scan_2d(
                     continue
                 # creata a function object
                 line_func = ROOT.TF1(line["label"], line["eq"], x_min, x_max)
-                print(line["eq"], line["label"],  x_min, x_max)
+                print(line["eq"], line["label"], x_min, x_max)
                 r.setup_func(
                     line_func,
                     props={"LineWidth": 3, "LineStyle": int(line["style"])},
@@ -1045,7 +1045,8 @@ def plot_likelihood_scan_2d(
         y_offset = 40
         if cms_layout.startswith("inside"):
             y_offset = 100 if cms_layout == "inside_vertical" and cms_postfix else 80
-        if eft_lines: y_offset += 100
+        if eft_lines:
+            y_offset += 100
         extra_label = to_root_latex(extra_text)
         extra_label = r.routines.create_top_left_label(
             extra_label,
