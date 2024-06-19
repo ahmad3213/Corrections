@@ -470,7 +470,7 @@ action() {
 }
 if [ -z ${DHI_EL9_SETUP} ];
 then
-    action ${DHI_EL9_SETUP}
+    action $@
 else
-    action "$@"
+    action ${DHI_EL9_SETUP}
 fi
