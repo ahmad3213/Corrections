@@ -468,4 +468,9 @@ action() {
         return "${code}"
     fi
 }
-action "$@"
+if [ -z ${DHI_EL9_SETUP} ];
+then
+    action ${DHI_EL9_SETUP}
+else
+    action "$@"
+fi
