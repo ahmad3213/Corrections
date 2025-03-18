@@ -184,11 +184,11 @@ class JetCorrProducer:
                 sample_letter = ""
                 sample_version = ""
                 if sample_name[-1].isalpha():
-                    letter = sample_name[-1]
+                    sample_letter = sample_name[-1]
                 elif sample_name[-1].isnumeric():
                     tokens = sample_name.split('_')
-                    version = tokens[-1]
-                    letter = tokens[-2][-1]
+                    sample_version = tokens[-1]
+                    sample_letter = tokens[-2][-1]
 
                 # in some cases, sample letter can be compound:
                 # e.g. for 2022_Summer22 run letter is CD
